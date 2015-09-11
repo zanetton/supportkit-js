@@ -4,14 +4,15 @@ require("babelify/polyfill");
 // polyfill for window.fetch
 require('whatwg-fetch');
 require('./utils/backbone.ajax');
-var $ = require('jquery');
-
-require('./utils/jquery.support.cssproperty');
+require('./utils/zepto.transitions');
+var $ = require('npm-zepto');
 
 /**
  * Marionette setup
  */
 var Backbone = require('backbone');
+
+// zepto is exporting {$, Zepto} for some reason.
 Backbone.$ = $;
 var Marionette = require('backbone.marionette');
 

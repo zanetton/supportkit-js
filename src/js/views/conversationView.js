@@ -19,7 +19,7 @@ module.exports = Marionette.CompositeView.extend({
     },
 
     scrollToBottom: function() {
-        this.$el.scrollTop(this.$el.get(0).scrollHeight - this.$el.outerHeight() - this.ui.logo.outerHeight());
+        this.$el.scrollTop(this.$el.get(0).scrollHeight - this.$el.height() - this.ui.logo.height());
     },
 
     onAddChild: function() {
@@ -38,10 +38,10 @@ module.exports = Marionette.CompositeView.extend({
     },
 
     positionLogo: function() {
-        var conversationHeight = this.$el.outerHeight();
-        var logoHeight = this.ui.logo.outerHeight();
-        var introHeight = this.ui.intro.outerHeight();
-        var messagesHeight = this.ui.messages.outerHeight();
+        var conversationHeight = this.$el.height();
+        var logoHeight = this.ui.logo.height();
+        var introHeight = this.ui.intro.height();
+        var messagesHeight = this.ui.messages.height();
         var heightRemaining = conversationHeight - (introHeight + messagesHeight + logoHeight);
 
         if (heightRemaining > logoHeight) {

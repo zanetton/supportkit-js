@@ -20,6 +20,8 @@ var ChatController = require('./controllers/chatController');
 var Conversations = require('./collections/conversations');
 var endpoint = require('./endpoint');
 var api = require('./utils/api');
+var cssProperty = require('./utils/cssProperty');
+
 
 var SK_STORAGE = 'sk_deviceid';
 
@@ -51,7 +53,6 @@ var SupportKit = Marionette.Object.extend({
 
     initialize: function() {
         bindAll(this);
-        this._readyPromise = $.Deferred();
         this._conversations = new Conversations();
     },
 
@@ -82,7 +83,7 @@ var SupportKit = Marionette.Object.extend({
 
         // TODO: alternatively load fallback CSS that doesn't use
         // unsupported things like transforms
-        if (!$.support.cssProperty('transform')) {
+        if (!cssProperty('transform')) {
             console.error('SupportKit is not supported on this browser. ' +
                 'Missing capability: css-transform');
             return;
@@ -110,7 +111,10 @@ var SupportKit = Marionette.Object.extend({
 
         this.deviceId = this.getDeviceId();
 
-        api.call({
+        return new Promise(function(resolve, reject) {
+            this.once('ready', resolve);
+
+            api.call({
                 url: 'appboot',
                 method: 'POST',
                 data: {
@@ -172,15 +176,13 @@ var SupportKit = Marionette.Object.extend({
                     wait: true
                 });
             }).bind(this))
-            .then(_(function() {
-                this._renderWidget();
-            }).bind(this))
-            .catch(function(err) {
+            .then(this._renderWidget)
+            /*.catch(function(err) {
                 var message = err && (err.message || err.statusText);
                 console.error('SupportKit init error: ', message);
-            });
-
-        return this._readyPromise;
+                reject(new Error('SupportKit init error'));
+            });*/
+        }.bind(this));
     },
 
     logout: function() {
@@ -297,7 +299,7 @@ var SupportKit = Marionette.Object.extend({
     },
 
     _renderWidget: function() {
-        this._chatController.getWidget().then(_.bind(function(widget) {
+        return this._chatController.getWidget().then(_.bind(function(widget) {
             $('body').append(widget.el);
 
             _(function() {
@@ -312,7 +314,6 @@ var SupportKit = Marionette.Object.extend({
     onReady: function() {
         this.ready = true;
         this.track('skt-appboot');
-        this._readyPromise.resolve();
     },
 
     onDestroy: function() {
@@ -322,7 +323,6 @@ var SupportKit = Marionette.Object.extend({
             this._conversations.reset();
             this._chatController.destroy();
 
-            this._readyPromise = $.Deferred();
 
             endpoint.reset();
 

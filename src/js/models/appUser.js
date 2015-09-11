@@ -51,7 +51,7 @@ var AppUser = module.exports = Backbone.AssociatedModel.extend({
         } else {
             success && success(this, null, null);
 
-            return $.Deferred().resolve(this, null, null);
+            return Promise.resolve(this, null, null);
         }
     },
 

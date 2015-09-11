@@ -157,7 +157,6 @@ module.exports = ViewController.extend({
     },
 
     _getConversation: function() {
-        var deferred = $.Deferred();
 
         if (this.conversation) {
             // we created an empty collection, but a remote one was created
@@ -178,9 +177,7 @@ module.exports = ViewController.extend({
             }
         }
 
-        deferred.resolve(this.conversation);
-
-        return deferred;
+        return Promise.resolve(this.conversation);
     },
 
     _initFaye: function(conversation) {
@@ -191,7 +188,7 @@ module.exports = ViewController.extend({
             }.bind(this));
         }
 
-        return $.Deferred().resolve(conversation);
+        return Promise.resolve(conversation);
     },
 
     _initConversation: function() {
@@ -317,6 +314,8 @@ module.exports = ViewController.extend({
     _renderWidget: function(conversation) {
         this.model = conversation;
 
+        this.getView().render();
+
         this._renderChatHeader();
         this._renderConversation();
         this._renderConversationInput();
@@ -333,13 +332,8 @@ module.exports = ViewController.extend({
         var view = this.getView();
 
         if (view.isRendered) {
-            return $.Deferred().resolve(view);
+            return Promise.resolve(view);
         }
-
-        // this a workaround for rendering layout views and fixing regions
-        // seems to be a lot of issues around layout views rendering...
-        // https://github.com/marionettejs/backbone.marionette/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+layout+render
-        view.render()._reInitializeRegions();
 
         return this._initConversation()
             .then(this._initMessagingBus)

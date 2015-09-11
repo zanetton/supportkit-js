@@ -3,7 +3,6 @@
 var Faye = require('faye');
 var endpoint = require('./endpoint');
 var vent = require('./vent');
-var $ = require('jquery');
 
 module.exports.init = function(conversationId) {
     var faye = new Faye.Client(endpoint.rootUrl + '/faye');
@@ -20,16 +19,14 @@ module.exports.init = function(conversationId) {
 
     // this is needed since Faye is using a Promise implementation
     // that only has `then(resolve, reject)` and `all` methods.
-    var deferred = $.Deferred();
-
-    faye.subscribe('/conversations/' + conversationId, function(message) {
-        vent.trigger('receive:message', message);
-    }).then(function() {
-        deferred.resolve(faye);
-    }, function(err) {
-        console.error('Faye subscription error:', err && err.message);
-        deferred.reject(err);
+    return new Promise(function(resolve, reject) {
+        faye.subscribe('/conversations/' + conversationId, function(message) {
+            vent.trigger('receive:message', message);
+        }).then(function() {
+            resolve(faye);
+        }, function(err) {
+            console.error('Faye subscription error:', err && err.message);
+            reject(err);
+        });
     });
-
-    return deferred;
 };
