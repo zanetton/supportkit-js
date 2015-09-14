@@ -37,16 +37,16 @@ var SupportKit = Marionette.Object.extend({
     VERSION: '0.2.30',
 
     defaultText: {
-        headerText: 'How can we help?',
-        inputPlaceholder: 'Type a message...',
-        sendButtonText: 'Send',
-        introText: 'This is the beginning of your conversation.<br/> Ask us anything!',
-        settingsText: 'You can leave us your email so that we can get back to you this way.',
-        settingsReadOnlyText: 'We\'ll get back to you at this email address if we missed you.',
-        settingsInputPlaceholder: 'Your email address',
-        settingsSaveButtonText: 'Save',
-        settingsHeaderText: 'Email Settings',
-        settingsNotificationText: 'In case we\'re slow to respond you can <a href="#" data-ui-settings-link>leave us your email</a>.'
+        header-text: 'How can we help?'
+        input-placeholder: 'Type a message...'
+        send-button-text: 'Send'
+        intro-text_html: 'You are now in conversation with SupportKit.<br/> What would you like to ask us?'
+        settings-text: "If we miss you, we'll get back to you at the email address you left."
+        settings-read-only-text: "We'll get back to you at this email address if we missed you."
+        settings-input-placeholder: 'Your email address'
+        settings-save-button-text: 'Save'
+        settings-header-text: 'Email Settings'
+        settings-notification-text_html: "In case we&apos;re slow to respond you can slow to respond you can <a href="#" data-ui-settings-link>leave us your email</a>."
     },
 
     initialize: function() {
